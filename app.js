@@ -74,7 +74,7 @@ function handleLogin() {
 
 // Initialize login only on login page
 document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.pathname.includes("login.html")) {
+    if (window.location.pathname.includes("index.html")) {
         handleLogin();
     }
 });
@@ -85,7 +85,7 @@ function loadDashboard() {
     const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     if (!currentUser) {
         alert("User not logged in. Redirecting to login page.");
-        location.href = "login.html";
+        location.href = "index.html";
         return;
     }
 
