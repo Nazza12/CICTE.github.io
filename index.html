@@ -3,10 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Make sure paths match exactly -->
-<link rel="stylesheet" href="index.css">
-<script src="app.js"></script>
+  <link rel="stylesheet" href="index.css">
+  <script src="app.js"></script>
+  <style>
+    /* Add some CSS to style the loading and status indication */
+    .loading-indicator {
+      display: none;
+      text-align: center;
+      color: #d20d0d;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
 
+    .status-message {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .scan-instruction {
+      margin-bottom: 20px;
+    }
+
+    .scan-icon {
+      width: 50px;
+      height: 50px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -23,6 +46,11 @@
       <p id="status">Scan your ID to proceed...</p>
     </div>
 
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading-indicator">
+      <p>Scanning...</p>
+    </div>
+
     <!-- Footer with College Information -->
     <div class="footer">
       <p>WESTERN LEYTE COLLEGE OF ORMOC</p>
@@ -30,6 +58,37 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    // Function to update status when RFID is being scanned
+    function startScan() {
+      document.getElementById("status").innerText = "Scanning your ID... Please wait.";
+      document.getElementById("loadingIndicator").style.display = "block";  // Show loading indicator
+    }
+
+    // Function to update status based on scan result
+    function onScanSuccess(user) {
+      document.getElementById("status").innerText = `Welcome, ${user.name}!`;  // Change status message on successful scan
+      document.getElementById("loadingIndicator").style.display = "none";  // Hide loading indicator
+    }
+
+    function onScanFailure() {
+      document.getElementById("status").innerText = "Invalid RFID. Please try again.";  // Update status on failure
+      document.getElementById("loadingIndicator").style.display = "none";  // Hide loading indicator
+    }
+
+    // Simulate the scanning process (replace this with your actual RFID logic)
+    function simulateScan() {
+      startScan();  // Start scanning process
+
+      setTimeout(() => {
+        // Simulate successful scan (replace this with actual logic)
+        const user = { name: "Hello World" };
+        onScanSuccess(user);  // If scan is successful, update the status
+      }, 2000); // Simulate a 2-second delay
+    }
+
+    // Trigger simulation of scanning when the page loads
+    window.onload = simulateScan;
+  </script>
 </body>
 </html>
