@@ -41,7 +41,7 @@ function handleSearch() {
             <p><strong>Ebook Available:</strong> ${book.ebookAvailable ? "Yes" : "No"}</p>
         `;
     } else {
-        bookInfoDiv.innerHTML = <p>Book not found. Please scan or search again.</p>;
+        bookInfoDiv.innerHTML = `<p>Book not found. Please scan or search again.</p>`;
     }
 }
 // Variable to track last scanned RFID for books
@@ -90,19 +90,19 @@ function loadDashboard() {
     }
 
     // Display user info
-    document.getElementById("welcome-message").innerText = Welcome, ${currentUser.name}!;
+    document.getElementById("welcome-message").innerText = `Welcome, ${currentUser.name}!`;
     document.getElementById("user-name").innerText = currentUser.name;
-    document.getElementById("student-id").innerText = Student ID: ${currentUser.studentId};
+    document.getElementById("student-id").innerText = `Student ID: ${currentUser.studentId}`;
     document.getElementById("profile-image").src = currentUser.profileImage;
 
     // Display borrowed books
     const borrowedBooks = currentUser.books.map((bookId) => {
         const book = books.find((b) => b.rfid === bookId);
-        return book ? ${book.title} by ${book.author} : "Unknown Book";
+        return book ? `${book.title} by ${book.author}` : "Unknown Book";
     });
     document.getElementById("borrowed-books").innerText =
         borrowedBooks.length > 0
-            ? You have ${borrowedBooks.length} borrowed book(s): ${borrowedBooks.join(", ")}
+            ? `You have ${borrowedBooks.length} borrowed book(s): ${borrowedBooks.join(", ")}`
             : "You have no borrowed books.";
 
     // Option to scan a book
@@ -119,11 +119,11 @@ function loadDashboard() {
         if (book) {
             // Display book details
             document.getElementById("book-title").innerText = book.title;
-            document.getElementById("book-author").innerText = Author: ${book.author};
+            document.getElementById("book-author").innerText = `Author: ${book.author}`;
             document.getElementById("book-image").src = book.image;
             document.getElementById("book-ebook").innerText = book.hasEbook ? "E-book available" : "No E-book available";
             document.getElementById("book-ebook-link").href = book.hasEbook ? book.ebookUrl : '#';
-            document.getElementById("book-owners").innerText = Previous Owners: ${book.previousOwners.join(', ')};
+            document.getElementById("book-owners").innerText = `Previous Owners: ${book.previousOwners.join(', ')}`;
         } else {
             alert("Book not found.");
         }
@@ -147,7 +147,7 @@ function borrowBook() {
         if (!currentUser.books.includes(book.rfid)) {
             currentUser.books.push(book.rfid);
             sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
-            alert(You have successfully borrowed: ${book.title}. Enjoy reading!);
+            alert(`You have successfully borrowed: ${book.title}. Enjoy reading!`);
         } else {
             alert("This book is already borrowed by you.");
         }
@@ -173,7 +173,7 @@ function returnBook() {
         if (currentUser.books.includes(book.rfid)) {
             currentUser.books = currentUser.books.filter((b) => b !== book.rfid);
             sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
-            alert(Thank you for returning: ${book.title}. Hope you learned something new!);
+            alert(`Thank you for returning: ${book.title}. Hope you learned something new!`);
         } else {
             alert("This book is not borrowed by you.");
         }
@@ -181,6 +181,63 @@ function returnBook() {
         alert("Book not found. Please try scanning again.");
     }
 }
+
+let studentData = {}; // Object to store student data
+
+// Pre-fetch student data when the page loads
+async function loadStudentData() {
+    const spreadsheetUrl = 'https://docs.google.com/spreadsheets/d/YOUR_STUDENT_DATA_SPREADSHEET_ID/export?format=csv'; // Link to student data CSV
+    const response = await fetch(spreadsheetUrl);
+    const data = await response.text();
+    const rows = data.split('\n').map(row => row.trim()).filter(row => row !== ''); // Trim and remove empty rows
+
+    // Process rows and store them in an object
+    rows.forEach(row => {
+        const columns = row.split(',');
+        const id = columns[0].trim();
+        const name = columns[1].trim();
+        const image = columns[2].trim(); // Profile Image URL
+        studentData[id] = { name, image };
+    });
+}
+
+// Fetch and display student information based on the ID
+function fetchStudentInfo(studentID) {
+    const studentInfo = studentData[studentID];
+    if (studentInfo) {
+        const { name, image } = studentInfo;
+
+        // Update the right panel with student details
+        document.getElementById('studentName').textContent = name;
+        document.getElementById('studentID').textContent = `Student ID: ${studentID}`;
+        const studentImageElement = document.getElementById('studentImage');
+        studentImageElement.src = image || 'images/profile_placeholder.jpg';
+        studentImageElement.style.display = 'block';
+    } else {
+        document.getElementById('studentName').textContent = 'Student Name will appear here';
+        document.getElementById('studentID').textContent = 'Student ID will appear here';
+        document.getElementById('studentImage').style.display = 'none';
+    }
+}
+
+// Handle RFID scan for both book and student data
+function handleRFIDScan(event) {
+    const code = event.target.value.trim();
+
+    // Determine if the code is for a book or a student
+    if (bookData[code]) {
+        fetchBookInfo(code); // Fetch book data
+    } else if (studentData[code]) {
+        fetchStudentInfo(code); // Fetch student data
+    }
+}
+
+// Call this on page load
+window.onload = () => {
+    loadBookData();   // Load book data
+    loadStudentData(); // Load student data
+};
+
 
 // Dashboard Scan for Book Info
 function displayBookInfo() {
