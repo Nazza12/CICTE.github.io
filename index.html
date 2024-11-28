@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Information</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="login.css">
+  <title>CICTE Library Welcome</title>
 </head>
 <body>
-    <h1>Scan Book Code</h1>
-    <input type="text" id="bookCode" placeholder="Enter Book Code" oninput="handleScan(event)" />
+  <div class="container">
+    <!-- College Logo and Header -->
+    <div class="header">
+      <img src="images/college_logo.png" alt="CICTE Logo" class="logo1">
+      <h1>Welcome to CICTE Library!</h1>
+      <img src="images/college_seal.png" alt="Western Leyte College Seal" class="logo2">
+    </div>
 
-    <h2 id="bookName">Loading...</h2>
-    <img id="bookImage" src="" alt="Book Image" style="display:none; width: 200px; height: auto;"/>
+    <!-- Scan Instruction Section -->
+    <div class="scan-instruction">
+      <img src="images/scan_icon.jpg" alt="Scan Icon" class="scan-icon">
+      <p id="status">Scan your ID to proceed...</p>
+    </div>
 
-    <script src="script.js"></script> <!-- Link to your JavaScript file -->
+    <!-- Footer with College Information -->
+    <div class="footer">
+      <p>WESTERN LEYTE COLLEGE OF ORMOC</p>
+      <p>A. Bonifacio St., Ormoc City, Leyte, 6541, Philippines</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
